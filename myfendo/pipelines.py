@@ -8,6 +8,7 @@ import os
 import codecs
 from scrapy.conf import settings
 import pymysql
+import requests
 
 
 class MyfendoPipeline(object):
@@ -26,7 +27,9 @@ class MyfendoPipeline(object):
         bookname = bookname.replace('<h>', " ").replace('</h>', " ")
         bookname = bookname.strip()
         content = item['content']
-
+        url = item['url']
+        imgUrl = item['imgUrl']
+        author = item['author']
 
         if not os.path.exists(book_List):
             os.makedirs(book_List)
@@ -34,7 +37,7 @@ class MyfendoPipeline(object):
 
         conut = self.cursor.execute("select * from book_list where book_list= '%s'" % book_List)
         self.cursor.fetchall()
-        if conut==0:
+        if conut == 0:
             sql = "insert into book_list(book_list, book_list_tag) values(%s,%s)"
             params = (book_List, book_list_tag)
             self.cursor.execute(sql, params)
@@ -49,23 +52,30 @@ class MyfendoPipeline(object):
 
         conut = self.cursor.execute("select * from book_name where book_name= '%s'" % bookname)
         self.cursor.fetchall()
+
+        ss = os.path.abspath(book_List_Ptah + "/" + bookname)
         if conut == 0:
-            self.cursor.execute("select * from book_list where book_list= '%s'" %book_List)
+
+            ir = requests.get(imgUrl)
+            if ir.status_code == 200:
+                open(ss + "\\" + bookname + '.jpg', 'wb').write(ir.content)
+                imgFilePath = ss + "\\" + bookname + '.jpg'
+            else:
+                imgFilePath = ''
+
+            self.cursor.execute("select * from book_list where book_list= '%s'" % book_List)
             re = self.cursor.fetchall()
             book_list_id = re[0][0]
-            sql = "insert into book_name(book_name, book_list_id) values(%s,%s)"
-            params = (bookname, book_list_id)
+            sql = "insert into book_name(book_name, book_list_id,book_author,img_url,img_path) values(%s,%s,%s,%s,%s)"
+            params = (bookname, book_list_id, author, imgUrl, imgFilePath)
             self.cursor.execute(sql, params)
+
         else:
             pass
 
-
-        ss = os.path.abspath(book_List_Ptah + "/" + bookname)
         filename = codecs.open(ss + "/" + booktitle + '.text', 'wb', encoding="utf-8")
         filename.write(content)
         filePath = os.path.abspath(filename.name)
-        url = item['url']
-
         conut = self.cursor.execute("select * from book where book_title= '%s'" % booktitle)
         self.cursor.fetchall()
 
@@ -79,5 +89,4 @@ class MyfendoPipeline(object):
         else:
             pass
         self.conn.commit()
-
         return item

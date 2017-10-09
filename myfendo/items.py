@@ -17,4 +17,5 @@ class MyfendoItem(scrapy.Item):
     bookdirnumber = scrapy.Field()
     book_List = scrapy.Field()
     book_list_tag = scrapy.Field()
-
+    imgUrl = scrapy.Field()
+    author = scrapy.Field()

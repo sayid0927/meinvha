@@ -27,7 +27,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -56,9 +56,29 @@ DEFAULT_REQUEST_HEADERS = {
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'myfendo.middlewares.MyCustomDownloaderMiddleware': 543,
-#}
+# DOWNLOADER_MIDDLEWARES = {
+#    'myfendo.middlewares.RandomUserAgent': 100,
+#     'myfendo.middlewares.RandomProxy': 200,
+# }
+
+USER_AGENTS = [
+    'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0)',
+    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.2)',
+    'Opera/9.27 (Windows NT 5.2; U; zh-cn)',
+    'Opera/8.0 (Macintosh; PPC Mac OS X; U; en)',
+    'Mozilla/5.0 (Macintosh; PPC Mac OS X; U; en) Opera 8.0',
+    'Mozilla/5.0 (Linux; U; Android 4.0.3; zh-cn; M032 Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
+    'Mozilla/5.0 (Windows; U; Windows NT 5.2) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13'
+]
+
+
+
+PROXIES = [
+        {"ip_port" :"222.222.169.60:53281"},
+        {"ip_port" :"182.42.39.214:808"},
+        {"ip_port" :"218.73.136.182:3128"},
+        {"ip_port" :"180.168.179.193:8080"}
+]
 
 
 
@@ -74,7 +94,6 @@ DEFAULT_REQUEST_HEADERS = {
 ITEM_PIPELINES = {
     'myfendo.pipelines.MyfendoPipeline': 300,
 }
-
 
 LOG_FILE ='dg.log'
 LOG_LEVEL ='DEBUG'
